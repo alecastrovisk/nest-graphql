@@ -1,8 +1,10 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { ApiTags } from '@nestjs/swagger';
 import { CreateUserDTO } from './dto/create-user.input';
 import { User } from './user.entity';
 import { UserService } from './user.service';
 
+@ApiTags('users')
 @Resolver('User')
 export class UserResolver {
     constructor(
@@ -25,10 +27,9 @@ export class UserResolver {
 
     @Query(() => User)
     async user(
-        @Args('id') id: string
+        @Args('id') id: number
     ): Promise<User> {
         const user = await this.userService.findUserById(id);
         return user;
     }
-
 }

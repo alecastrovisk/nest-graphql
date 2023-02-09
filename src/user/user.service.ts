@@ -30,8 +30,8 @@ export class UserService {
         return users;
     }
     
-    async findUserById(id: string): Promise<User> {
-        const user = await this.userRepository.findOneBy({ id: parseInt(id) });
+    async findUserById(id: number): Promise<User> {
+        const user = await this.userRepository.findOneBy({ id: id });
 
         if(!user) {
             throw new NotFoundException('Usuário não encontrado!');
@@ -40,8 +40,8 @@ export class UserService {
         return user;
     }
 
-    async updateUser(id: string, data: UpdateUserDTO): Promise<void> {  
-        const user = await this.userRepository.findOneBy({ id: parseInt(id) });
+    async updateUser(id: number, data: UpdateUserDTO): Promise<void> {  
+        const user = await this.userRepository.findOneBy({ id: id });
 
         if(!user) {
             throw new NotFoundException('Usuário não encontrado!');
@@ -51,12 +51,22 @@ export class UserService {
         
     }
 
-    async deleteUser(id: string): Promise<void> {
-        const user = await this.userRepository.findOneBy({ id: parseInt(id) });
+    async deleteUser(id: number): Promise<void> {
+        const user = await this.userRepository.findOneBy({ id: id });
         if(!user) {
             throw new NotFoundException('Usuário não encontrado!');
         }
 
         await this.userRepository.delete(id);
+    }
+
+    async softDeleteUser(id: number): Promise<void> {
+       const user = await this.userRepository.findOneBy({ id: id });
+       
+       if(!user) {
+        throw new NotFoundException('Usuário não encontrado!');
+       }
+       
+       await this.userRepository.softDelete(user);
     }
 }

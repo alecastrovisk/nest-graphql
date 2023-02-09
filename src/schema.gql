@@ -3,21 +3,31 @@
 # ------------------------------------------------------
 
 input CreateUserDTO {
+  age: Float!
   email: String!
   name: String!
 }
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
 type Mutation {
   createUser(data: CreateUserDTO!): User!
 }
 
 type Query {
-  user(id: String!): User!
+  user(id: Float!): User!
   users: [User!]!
 }
 
 type User {
+  age: Float!
+  createdAt: DateTime!
+  deletedAt: DateTime!
   email: String!
   id: ID!
   name: String!
+  updatedAt: DateTime!
 }

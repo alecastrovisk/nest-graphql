@@ -1,10 +1,12 @@
 import { Body, Controller, Delete, Param, Post, Put } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { CreateUserDTO } from './dto/create-user.input';
 import { UpdateUserDTO } from './dto/update-user.input';
 import { User } from './user.entity';
 import { UserService } from './user.service';
 
-@Controller('User')
+@ApiTags('users')
+@Controller('user')
 export class UserController {
     constructor(
         private userService: UserService
@@ -18,7 +20,7 @@ export class UserController {
 
     @Put(':id')
     async update(
-        @Param('id') id: string, 
+        @Param('id') id: number, 
         @Body() data: UpdateUserDTO
     ): Promise<string> {
         const user = await this.userService.updateUser(id, data);
@@ -27,9 +29,17 @@ export class UserController {
 
     @Delete(':id')
     async delete(
-        @Param('id') id: string
+        @Param('id') id: number
     ): Promise<string> {
         await this.userService.deleteUser(id);
+        return 'Usuário deletado com sucesso!';
+    }
+
+    @Delete('soft/:id')
+    async softDelete(
+        @Param('id') id: number
+    ): Promise<string> {
+        await this.userService.softDeleteUser(id);
         return 'Usuário deletado com sucesso!';
     }
 }

@@ -1,9 +1,16 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { 
+    Injectable, 
+    InternalServerErrorException, 
+    NotFoundException 
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+
 import { CreateUserDTO } from './dto/create-user.input';
 import { UpdateUserDTO } from './dto/update-user.input';
 import { User } from './user.entity';
+
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -13,7 +20,13 @@ export class UserService {
     ){}
 
     async createUser(data: CreateUserDTO): Promise<User> {
-        const user = this.userRepository.create(data);
+        const userData = {
+            ...data,
+            password: await bcrypt.hash(data.password, 10),
+        }
+
+        const user = this.userRepository.create(userData);
+
         const userSaved = await this.userRepository.save(user);
 
         if(!userSaved) {
@@ -22,7 +35,10 @@ export class UserService {
             );
         }
 
-        return userSaved;
+        return {
+            ...userSaved, 
+            password: undefined
+        };
     }
 
     async findAllUsers(): Promise<User[]> {
@@ -36,6 +52,14 @@ export class UserService {
         if(!user) {
             throw new NotFoundException('Usuário não encontrado!');
         }
+
+        return user;
+    }
+
+    async findUserByEmail(email: string): Promise<User> {
+        const user =  await this.userRepository.findOne({
+            where: {email: email}
+        });
 
         return user;
     }

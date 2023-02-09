@@ -18,6 +18,10 @@ export class User {
 
     @Column()
     @Field()
+    password: string;
+
+    @Column()
+    @Field()
     age: number;
 
     @CreateDateColumn()

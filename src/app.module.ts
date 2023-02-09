@@ -9,8 +9,8 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { AppService } from './app.service';
 import { AppController } from './app.controller';
 
-import TypeOrmConfig from './config/typeorm.config';
 import { dataSourceOptions } from './database/data-source';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -20,7 +20,8 @@ import { dataSourceOptions } from './database/data-source';
       sortSchema: true,
     }),
     TypeOrmModule.forRoot(dataSourceOptions),
-    UserModule
+    UserModule,
+    AuthModule
   ],
   controllers: [AppController],
   providers: [AppService],

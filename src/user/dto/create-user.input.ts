@@ -4,7 +4,8 @@ import {
     IsEmail,
     IsNotEmpty,
     IsNumber,
-    IsString, MaxLength,
+    IsString,
+    MaxLength,
     MinLength
 } from "class-validator";
 
@@ -24,6 +25,9 @@ export class CreateUserDTO {
     @IsNotEmpty({ message: 'O campo não pode ser vazio!'})
     email: string;
 
+    @ApiProperty({
+        example: '12345'
+    })
     @IsString()
     @MinLength(4)
     @MaxLength(8)

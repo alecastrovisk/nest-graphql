@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, HttpCode, HttpException, HttpStatus, InternalServerErrorException, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { LocalAuthGuard } from 'src/auth/guards/local-auth.guard';
@@ -12,9 +12,8 @@ import { UserService } from './user.service';
 export class UserController {
     constructor(
         private userService: UserService
-    ){}
-    
-    @UseGuards(LocalAuthGuard)
+    ) { }
+
     @Post()
     async create(@Body() data: CreateUserDTO): Promise<User> {
         const user = await this.userService.createUser(data);
@@ -22,30 +21,40 @@ export class UserController {
     }
 
     @UseGuards(JwtAuthGuard)
+    @HttpCode(HttpStatus.NO_CONTENT)
     @Put(':id')
     async update(
-        @Param('id') id: number, 
+        @Param('id') id: number,
         @Body() data: UpdateUserDTO
-    ): Promise<string> {
+    ): Promise<Object> {
         const user = await this.userService.updateUser(id, data);
-        return 'Usuário atualizado!';
+        return {
+            message: 'Usuário atualizado!'
+        };
     }
 
     @UseGuards(JwtAuthGuard)
+    @HttpCode(HttpStatus.OK)
     @Delete(':id')
     async delete(
         @Param('id') id: number
-    ): Promise<string> {
+    ): Promise<Object> {
         await this.userService.deleteUser(id);
-        return 'Usuário deletado com sucesso!';
+        return {
+            message: 'Usuário deletado!'
+        };
+
     }
 
     @UseGuards(JwtAuthGuard)
+    @HttpCode(HttpStatus.OK)
     @Delete('soft/:id')
     async softDelete(
         @Param('id') id: number
-    ): Promise<string> {
+    ): Promise<Object> {
         await this.userService.softDeleteUser(id);
-        return 'Usuário deletado com sucesso!';
+        return {
+            message: 'Usuário deletado!'
+        };
     }
 }

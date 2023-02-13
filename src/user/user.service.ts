@@ -1,6 +1,7 @@
 import { 
     Injectable, 
     InternalServerErrorException, 
+    NotAcceptableException, 
     NotFoundException 
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -20,6 +21,12 @@ export class UserService {
     ){}
 
     async createUser(data: CreateUserDTO): Promise<User> {
+        const emailIsUsed = this.findUserByEmail(data.email);
+        
+        if(emailIsUsed) {
+            throw new NotAcceptableException("O usuário já existe");
+        }
+
         const userData = {
             ...data,
             password: await bcrypt.hash(data.password, 10),

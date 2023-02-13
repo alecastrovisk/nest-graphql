@@ -5,3 +5,6 @@ export interface UserPayload {
     iat?: number;
     exp?: number;
 }
+
+//exp é quando irá expirar
+//iat é quando foi gerado

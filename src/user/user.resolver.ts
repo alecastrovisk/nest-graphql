@@ -1,5 +1,7 @@
+import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CreateUserDTO } from './dto/create-user.input';
 import { User } from './user.entity';
 import { UserService } from './user.service';
@@ -19,6 +21,7 @@ export class UserResolver {
         return user;
     }
 
+    @UseGuards(JwtAuthGuard)
     @Query(() => [User])
     async users(): Promise<User[]> {
         const users = await this.userService.findAllUsers();

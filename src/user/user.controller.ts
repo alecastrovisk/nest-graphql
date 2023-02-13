@@ -1,5 +1,7 @@
-import { Body, Controller, Delete, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { LocalAuthGuard } from 'src/auth/guards/local-auth.guard';
 import { CreateUserDTO } from './dto/create-user.input';
 import { UpdateUserDTO } from './dto/update-user.input';
 import { User } from './user.entity';
@@ -11,13 +13,15 @@ export class UserController {
     constructor(
         private userService: UserService
     ){}
-
+    
+    @UseGuards(LocalAuthGuard)
     @Post()
     async create(@Body() data: CreateUserDTO): Promise<User> {
         const user = await this.userService.createUser(data);
         return user;
     }
 
+    @UseGuards(JwtAuthGuard)
     @Put(':id')
     async update(
         @Param('id') id: number, 
@@ -27,6 +31,7 @@ export class UserController {
         return 'Usuário atualizado!';
     }
 
+    @UseGuards(JwtAuthGuard)
     @Delete(':id')
     async delete(
         @Param('id') id: number
@@ -35,6 +40,7 @@ export class UserController {
         return 'Usuário deletado com sucesso!';
     }
 
+    @UseGuards(JwtAuthGuard)
     @Delete('soft/:id')
     async softDelete(
         @Param('id') id: number

@@ -7,6 +7,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { LocalStrategy } from './strategies/local.strategy';
 import * as dotenv from 'dotenv'
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ dotenv.config();
     })
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy]
+  providers: [AuthService, LocalStrategy, JwtStrategy],
+  exports: [AuthService]
 })
 export class AuthModule {}

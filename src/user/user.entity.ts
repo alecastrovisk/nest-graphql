@@ -35,4 +35,15 @@ export class User {
     @DeleteDateColumn()
     @Field()
     deletedAt: Date;
+
+    constructor(user?: Partial<User>) {
+        this.id = user?.id;
+        this.name = user?.name;
+        this.email = user?.email;
+        this.password = user?.password;
+        this.age = user?.age;
+        this.createdAt = user?.createdAt;
+        this.updatedAt = user?.updatedAt;
+        this.deletedAt = user?.deletedAt;
+    }
 }

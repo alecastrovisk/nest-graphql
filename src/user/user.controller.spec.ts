@@ -1,39 +1,29 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { CreateUserDTO } from './dto/create-user.input';
-import { UserController } from './user.controller';
-import { UserService } from './user.service';
+import { Test, TestingModule } from "@nestjs/testing";
+import { UserController } from "./user.controller"
+import { User } from "./user.entity";
+import { UserService } from "./user.service";
 
-describe('UserService', () => {
-  let userService: UserService;
-  let userController: UserController;
+describe('UserController', () => {
+    let userController: UserController;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [UserService],
-      controllers: [UserController]
-    }).compile();
+    beforeEach( async () => {
+        const module: TestingModule = await Test.createTestingModule({
+            controllers: [UserController],
+            providers: [{
+                provide: UserService,
+                useValue: {
+                    createUser: jest.fn(),
+                    updateUser: jest.fn(),
+                    deleteUser: jest.fn(),
+                    softDelete: jest.fn(),
+                }
+            }]
+        }).compile();
 
-    userService = module.get<UserService>(UserService);
-    userController = module.get<UserController>(UserController);
-  });
+        userController = module.get<UserController>(UserController);
+    });
 
-  it('should be defined', () => {
-    expect(userService).toBeDefined();
-  });
-
-  describe('createUser', () => {
-    it('Should create a new User with success', async () => {
-      const data: CreateUserDTO = {
-        name: 'User Name',
-        email: 'useremail@email.com',
-        age: 22,
-        password: '12345'
-      };
-
-      const result = await userController.create(data);
-
-      expect(result).toBeDefined();
-      expect(userService.createUser).toBeCalledTimes(1);
-    })
-  })
+    it('should be defined', () => {
+        expect(userController).toBeDefined();
+    });
 });

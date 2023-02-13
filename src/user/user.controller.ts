@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, HttpCode, HttpException, HttpStatus, InternalServerErrorException, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, HttpCode, HttpStatus, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { LocalAuthGuard } from 'src/auth/guards/local-auth.guard';
@@ -12,7 +12,7 @@ import { UserService } from './user.service';
 export class UserController {
     constructor(
         private userService: UserService
-    ) { }
+    ) {}
 
     @Post()
     async create(@Body() data: CreateUserDTO): Promise<User> {

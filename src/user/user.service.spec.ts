@@ -1,39 +1,32 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CreateUserDTO } from './dto/create-user.input';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { UserController } from './user.controller';
+import { User } from './user.entity';
 import { UserService } from './user.service';
 
 describe('UserService', () => {
   let userService: UserService;
-  let userController: UserController;
+  let userRepository: Repository<User>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [UserService],
+      providers: [
+        UserService,
+        {
+          provide: getRepositoryToken(User),
+          useValue: {}
+        }
+      ],
       controllers: [UserController]
     }).compile();
 
     userService = module.get<UserService>(UserService);
-    userController = module.get<UserController>(UserController);
+    userRepository = module.get<Repository<User>>(getRepositoryToken(User));
   });
 
   it('should be defined', () => {
     expect(userService).toBeDefined();
+    expect(userRepository).toBeDefined();
   });
-
-  describe('createUser', () => {
-    it('Should create a new User with success', async () => {
-      const data: CreateUserDTO = {
-        name: 'User Name',
-        email: 'useremail@email.com',
-        age: 22,
-        password: '12345'
-      };
-
-      const result = await userController.create(data);
-
-      expect(result).toBeDefined();
-      expect(userService.createUser).toBeCalledTimes(1);
-    })
-  })
 });

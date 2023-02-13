@@ -21,11 +21,11 @@ export class UserService {
     ){}
 
     async createUser(data: CreateUserDTO): Promise<User> {
-        const emailIsUsed = this.findUserByEmail(data.email);
+        // const emailIsUsed = this.findUserByEmail(data.email);
         
-        if(emailIsUsed) {
-            throw new NotAcceptableException("O usuário já existe");
-        }
+        // if(emailIsUsed) {
+        //     throw new NotAcceptableException("O usuário já existe");
+        // }
 
         const userData = {
             ...data,

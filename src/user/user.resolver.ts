@@ -7,7 +7,7 @@ import { User } from './user.entity';
 import { UserService } from './user.service';
 
 @ApiTags('users')
-@Resolver('User')
+@Resolver('user')
 export class UserResolver {
     constructor(
         private userService: UserService

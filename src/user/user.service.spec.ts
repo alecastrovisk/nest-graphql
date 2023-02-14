@@ -1,9 +1,18 @@
+import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { UserController } from './user.controller';
 import { User } from './user.entity';
 import { UserService } from './user.service';
+
+const userEntityList: User[] = [
+  new User({
+    "name": "Mel",
+    "email": "mel@email.com",
+    "password": "12345",
+    "age": 19
+  })
+]
 
 describe('UserService', () => {
   let userService: UserService;
@@ -15,10 +24,18 @@ describe('UserService', () => {
         UserService,
         {
           provide: getRepositoryToken(User),
-          useValue: {}
+          useValue: {
+            find: jest.fn().mockResolvedValue(userEntityList),
+            findOneBy: jest.fn().mockResolvedValue(userEntityList[0]),
+            create: jest.fn(),
+            save: jest.fn(),
+            findOne: jest.fn(),
+            update: jest.fn(),
+            delete: jest.fn(),
+            softDelete: jest.fn(),
+          }
         }
       ],
-      controllers: [UserController]
     }).compile();
 
     userService = module.get<UserService>(UserService);
@@ -29,4 +46,37 @@ describe('UserService', () => {
     expect(userService).toBeDefined();
     expect(userRepository).toBeDefined();
   });
+
+  describe('findAllUsers', () => {
+    it('Should be able to return a list of Users entity', async () => {
+      const result = await userService.findAllUsers();
+
+      expect(result).toEqual(userEntityList);
+      expect(userRepository.find).toHaveBeenCalledTimes(1);
+    })
+
+    it('Should Throw an exception', () => {
+      jest.spyOn(userRepository,'find').mockRejectedValueOnce(new Error());
+
+      expect(userService.findAllUsers).rejects.toThrowError()
+    })
+  });
+
+  describe('findUserById', () => {
+    it('Should return an user entity successfully', async () => {
+      const result = await userService.findUserById(1);
+
+      expect(result).toEqual(userEntityList[0]);
+      expect(userRepository.findOneBy).toBeCalledTimes(1);
+    });
+
+    it('Should throw a not found exception', () => {
+      jest.spyOn(userRepository, 'findOneBy')
+        .mockRejectedValueOnce(new Error());
+
+      expect(userService.findUserById(1)).rejects.toThrowError(
+        NotFoundException
+      );
+    })
+  })
 });

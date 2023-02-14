@@ -141,5 +141,19 @@ describe('UserService', () => {
 
       expect(result).toEqual(userUpdated);
     });
-  })
+    it('Should throw a not found exception', () => {
+      const data: UpdateUserDTO = {
+        name: "Mel",
+        email: "mel@email.com",
+        age: 20
+      }
+
+      jest.spyOn(userRepository, 'findOneBy')
+        .mockRejectedValueOnce(new Error());
+
+      expect(userService.updateUser(1, data)).rejects.toThrowError(
+        NotFoundException
+      );
+    });
+  });
 });

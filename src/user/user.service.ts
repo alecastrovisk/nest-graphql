@@ -5,7 +5,7 @@ import {
     NotFoundException 
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 
 import { CreateUserDTO } from './dto/create-user.input';
 import { UpdateUserDTO } from './dto/update-user.input';
@@ -65,14 +65,16 @@ export class UserService {
         return user;
     }
 
-    async updateUser(id: number, data: UpdateUserDTO): Promise<Object> {  
-        const user = await this.userRepository.findOneBy({ id: id });
-
-        if(!user) {
+    async updateUser(id: number, data: UpdateUserDTO): Promise<UpdateResult> {  
+        try {
+            const user = await this.userRepository.findOneBy({ id: id });
+            
+            if(user) {
+                return await this.userRepository.update(id, data); 
+            }   
+        } catch (error) {
             throw new NotFoundException('Usuário não encontrado!');
         }
-
-        return await this.userRepository.update(id, data);
     }
 
     async deleteUser(id: number): Promise<void> {

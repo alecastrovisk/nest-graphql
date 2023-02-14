@@ -9,18 +9,18 @@ export class UpdateUserDTO {
     })
     @IsString()
     @IsNotEmpty({ message: 'O campo não pode ser vazio!'})
-    name: string;
+    name?: string;
 
     @ApiProperty({
         example: 'alexestagiario@email.com',
     })
     @IsEmail()
     @IsNotEmpty({ message: 'O campo não pode ser vazio!'})
-    email: string;
+    email?: string;
 
     @ApiProperty({
         example: 25,
     })
     @IsNumber()
-    age: number;
+    age?: number;
 }

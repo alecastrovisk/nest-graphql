@@ -21,12 +21,6 @@ export class UserService {
     ){}
 
     async createUser(data: CreateUserDTO): Promise<User> {
-        // const emailIsUsed = this.findUserByEmail(data.email);
-        
-        // if(emailIsUsed) {
-        //     throw new NotAcceptableException("O usuário já existe");
-        // }
-
         const userData = {
             ...data,
             password: await bcrypt.hash(data.password, 10),
@@ -71,15 +65,14 @@ export class UserService {
         return user;
     }
 
-    async updateUser(id: number, data: UpdateUserDTO): Promise<void> {  
+    async updateUser(id: number, data: UpdateUserDTO): Promise<Object> {  
         const user = await this.userRepository.findOneBy({ id: id });
 
         if(!user) {
             throw new NotFoundException('Usuário não encontrado!');
         }
 
-        await this.userRepository.update(id, data);
-        
+        return await this.userRepository.update(id, data);
     }
 
     async deleteUser(id: number): Promise<void> {

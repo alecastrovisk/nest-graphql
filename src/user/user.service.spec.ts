@@ -2,6 +2,8 @@ import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { CreateUserDTO } from './dto/create-user.input';
+import { UpdateUserDTO } from './dto/update-user.input';
 import { User } from './user.entity';
 import { UserService } from './user.service';
 
@@ -10,9 +12,23 @@ const userEntityList: User[] = [
     "name": "Mel",
     "email": "mel@email.com",
     "password": "12345",
-    "age": 19
+    "age": 20
   })
 ]
+
+const userWithUndefinedPassword: User = new User({
+    "name": "Mel",
+    "email": "mel@email.com",
+    "password": undefined,
+    "age": 20
+});
+
+const userUpdated: UpdateUserDTO = new User({
+  "name": "Mel",
+  "email": "mel@email.com",
+  "password": "12345",
+  "age": 20
+})
 
 describe('UserService', () => {
   let userService: UserService;
@@ -27,10 +43,10 @@ describe('UserService', () => {
           useValue: {
             find: jest.fn().mockResolvedValue(userEntityList),
             findOneBy: jest.fn().mockResolvedValue(userEntityList[0]),
-            create: jest.fn(),
-            save: jest.fn(),
+            create: jest.fn().mockReturnValue(userEntityList[0]),
+            save: jest.fn().mockResolvedValue(userEntityList[0]),
+            update: jest.fn().mockResolvedValue(userEntityList[0]),
             findOne: jest.fn(),
-            update: jest.fn(),
             delete: jest.fn(),
             softDelete: jest.fn(),
           }
@@ -56,7 +72,7 @@ describe('UserService', () => {
     })
 
     it('Should Throw an exception', () => {
-      jest.spyOn(userRepository,'find').mockRejectedValueOnce(new Error());
+      jest.spyOn(userRepository, 'find').mockRejectedValueOnce(new Error());
 
       expect(userService.findAllUsers).rejects.toThrowError()
     })
@@ -78,5 +94,52 @@ describe('UserService', () => {
         NotFoundException
       );
     })
+  });
+
+  describe('createUser', () => {
+    it('Should be able to create an user entity successfully', async () => {
+      const data: CreateUserDTO = {
+        name: "Mel",
+        email: "mel@email.com",
+        password: "12345",
+        age: 19
+      }
+
+      const result = await userService.createUser(data);
+
+      expect(result).toEqual(userWithUndefinedPassword);
+      expect(userRepository.create).toHaveBeenCalledTimes(1);
+      expect(userRepository.save).toHaveBeenCalledTimes(1);
+    });
+
+    it('Should throw an Exception', () => {
+      const data: CreateUserDTO = {
+          name: "Mel",
+          email: "mel@email.com",
+          password: "12345",
+          age: 19    
+      }
+
+      jest.spyOn(userRepository, 'save').mockRejectedValueOnce(new Error());
+
+      expect(userService.createUser(data)).rejects.toThrowError();
+    })
+  });
+
+  describe('updateUser', () => {
+    it('Should be able to update an user', async () => {
+      const data: UpdateUserDTO = {
+        name: "Mel",
+        email: "mel@email.com",
+        age: 20
+      }
+
+      jest.spyOn(userRepository, 'save')
+        .mockResolvedValueOnce(userEntityList[0])
+
+      const result = await userService.updateUser(1, data);
+
+      expect(result).toEqual(userUpdated);
+    });
   })
 });

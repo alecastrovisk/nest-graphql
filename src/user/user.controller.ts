@@ -29,7 +29,7 @@ export class UserController {
     ): Promise<Object> {
         const user = await this.userService.updateUser(id, data);
         return {
-            message: 'Usuário atualizado!'
+            user
         };
     }
 

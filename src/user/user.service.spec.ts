@@ -17,10 +17,10 @@ const userEntityList: User[] = [
 ]
 
 const userWithUndefinedPassword: User = new User({
-    "name": "Mel",
-    "email": "mel@email.com",
-    "password": undefined,
-    "age": 20
+  "name": "Mel",
+  "email": "mel@email.com",
+  "password": undefined,
+  "age": 20
 });
 
 const userUpdated: UpdateUserDTO = new User({
@@ -46,9 +46,7 @@ describe('UserService', () => {
             create: jest.fn().mockReturnValue(userEntityList[0]),
             save: jest.fn().mockResolvedValue(userEntityList[0]),
             update: jest.fn().mockResolvedValue(userEntityList[0]),
-            findOne: jest.fn(),
-            delete: jest.fn(),
-            softDelete: jest.fn(),
+            softDelete: jest.fn().mockResolvedValue(undefined),
           }
         }
       ],
@@ -114,10 +112,10 @@ describe('UserService', () => {
 
     it('Should throw an Exception', () => {
       const data: CreateUserDTO = {
-          name: "Mel",
-          email: "mel@email.com",
-          password: "12345",
-          age: 19    
+        name: "Mel",
+        email: "mel@email.com",
+        password: "12345",
+        age: 19
       }
 
       jest.spyOn(userRepository, 'save').mockRejectedValueOnce(new Error());
@@ -141,6 +139,7 @@ describe('UserService', () => {
 
       expect(result).toEqual(userUpdated);
     });
+
     it('Should throw a not found exception', () => {
       const data: UpdateUserDTO = {
         name: "Mel",
@@ -148,12 +147,33 @@ describe('UserService', () => {
         age: 20
       }
 
-      jest.spyOn(userRepository, 'findOneBy')
+      jest
+        .spyOn(userRepository, 'findOneBy')
         .mockRejectedValueOnce(new Error());
 
       expect(userService.updateUser(1, data)).rejects.toThrowError(
         NotFoundException
       );
+    });
+  });
+
+  describe('softDeleteUser', () => {
+    it('Should be able to delete an entity', async () => {
+      //act 
+      const result = await userService.softDeleteUser(1);
+
+      //assert
+      expect(result).toBeUndefined();
+      expect(userRepository.findOneBy).toBeCalledTimes(1);
+      expect(userRepository.softDelete).toBeCalledTimes(1);
+    });
+
+    it('Should throw a not found exception', () => {
+      jest
+      .spyOn(userRepository, 'findOneBy')
+      .mockRejectedValueOnce(new Error());
+
+      expect(userService.softDeleteUser(1)).rejects.toThrowError(NotFoundException);
     });
   });
 });

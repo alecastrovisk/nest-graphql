@@ -1,7 +1,6 @@
 import { 
     Injectable, 
     InternalServerErrorException, 
-    NotAcceptableException, 
     NotFoundException 
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -87,12 +86,14 @@ export class UserService {
     }
 
     async softDeleteUser(id: number): Promise<void> {
-       const user = await this.userRepository.findOneBy({ id: id });
-       
-       if(!user) {
-        throw new NotFoundException('Usuário não encontrado!');
-       }
-       
-       await this.userRepository.softDelete(user);
+        try {
+            const user = await this.userRepository.findOneBy({ id: id });
+            
+            if(user) {
+                await this.userRepository.softDelete(user);
+            }
+        } catch (error) {
+            throw new NotFoundException('Usuário não encontrado!');  
+        }
     }
 }

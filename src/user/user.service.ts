@@ -1,7 +1,7 @@
-import { 
-    Injectable, 
-    InternalServerErrorException, 
-    NotFoundException 
+import {
+    Injectable,
+    InternalServerErrorException,
+    NotFoundException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, UpdateResult } from 'typeorm';
@@ -17,35 +17,41 @@ export class UserService {
     constructor(
         @InjectRepository(User)
         private userRepository: Repository<User>
-    ){}
+    ) { }
 
     async createUser(data: CreateUserDTO): Promise<User> {
-        const userData = {
-            ...data,
-            password: await bcrypt.hash(data.password, 10),
-        }
-
-        const user = this.userRepository.create(userData);
-
-        const userSaved = await this.userRepository.save(user);
-
-        if(!userSaved) {
+        try {
+            const userData = {
+                ...data,
+                password: await bcrypt.hash(data.password, 10),
+            }
+    
+            const user = this.userRepository.create(userData);
+    
+            const userSaved = await this.userRepository.save(user);
+    
+            return {
+                ...userSaved, 
+                password: undefined
+            };
+        } catch(error) {
             throw new InternalServerErrorException(
                 'Não foi possível salvar o usuário!'
             );
         }
-
-        return {
-            ...userSaved, 
-            password: undefined
-        };
     }
 
     async findAllUsers(): Promise<User[]> {
-        const users = await this.userRepository.find();
-        return users;
+        try {
+            const users = await this.userRepository.find();
+            return users;    
+        } catch (error) {
+            throw new NotFoundException(
+                'Não foi possível encontrar os usuários!'
+            );
+        }
     }
-    
+
     async findUserById(id: number): Promise<User> {
         try {
             const user = await this.userRepository.findOneBy({ id: id });
@@ -57,43 +63,60 @@ export class UserService {
     }
 
     async findUserByEmail(email: string): Promise<User> {
-        const user =  await this.userRepository.findOne({
-            where: {email: email}
-        });
-
-        return user;
+        try {
+            const user = await this.userRepository.findOne({
+                where: { email: email }
+            });
+    
+            return user;
+        } catch (error) {
+            throw new NotFoundException(
+                'Usuário não encontrado pelo email!'
+            );
+        }
     }
 
-    async updateUser(id: number, data: UpdateUserDTO): Promise<UpdateResult> {  
+    async updateUser(id: number, data: UpdateUserDTO): Promise<Object> {
         try {
             const user = await this.userRepository.findOneBy({ id: id });
-            
-            if(user) {
-                return await this.userRepository.update(id, data); 
-            }   
+
+            if (!user) {
+                throw new NotFoundException('Usuário não encontrado!');
+            }
+  
+            await this.userRepository.update(id, data);
+
+            return {
+                message: 'Usuário atualizado com sucesso!'
+            }
         } catch (error) {
-            throw new NotFoundException('Usuário não encontrado!');
+            if(error instanceof NotFoundException) throw error;
+            
+            throw new InternalServerErrorException(
+                'Não foi possível atualizar o usuário!'
+            )
         }
     }
 
     async deleteUser(id: number): Promise<void> {
         const user = await this.userRepository.findOneBy({ id: id });
-        if(!user) {
+        if (!user) {
             throw new NotFoundException('Usuário não encontrado!');
         }
 
         await this.userRepository.delete(id);
+
     }
 
     async softDeleteUser(id: number): Promise<void> {
         try {
             const user = await this.userRepository.findOneBy({ id: id });
-            
-            if(user) {
+
+            if (user) {
                 await this.userRepository.softDelete(user);
             }
         } catch (error) {
-            throw new NotFoundException('Usuário não encontrado!');  
+            throw new NotFoundException('Usuário não encontrado!');
         }
     }
 }

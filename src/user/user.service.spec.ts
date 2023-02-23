@@ -129,7 +129,7 @@ describe('UserService', () => {
       const data: UpdateUserDTO = {
         name: "Mel",
         email: "mel@email.com",
-        age: 20
+        age: 22
       }
 
       jest.spyOn(userRepository, 'save')

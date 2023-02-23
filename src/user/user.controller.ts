@@ -1,9 +1,10 @@
-import { Body, Controller, Delete, HttpCode, HttpStatus, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Put, UseGuards, UsePipes } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { LocalAuthGuard } from 'src/auth/guards/local-auth.guard';
 import { CreateUserDTO } from './dto/create-user.input';
 import { UpdateUserDTO } from './dto/update-user.input';
+import { UserExistsPipe } from './pipes/user-exists.pipe';
 import { User } from './user.entity';
 import { UserService } from './user.service';
 
@@ -21,36 +22,33 @@ export class UserController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @HttpCode(HttpStatus.NO_CONTENT)
+    @HttpCode(HttpStatus.OK)
     @Put(':id')
     async update(
-        @Param('id') id: number,
+        @Param('id', ParseIntPipe) id: number,
         @Body() data: UpdateUserDTO
     ): Promise<Object> {
         const user = await this.userService.updateUser(id, data);
-        return {
-            user
-        };
+        return user;
     }
 
     @UseGuards(JwtAuthGuard)
     @HttpCode(HttpStatus.OK)
     @Delete(':id')
     async delete(
-        @Param('id') id: number
+        @Param('id', ParseIntPipe) id: number
     ): Promise<Object> {
         await this.userService.deleteUser(id);
         return {
             message: 'Usuário deletado!'
         };
-
     }
 
     @UseGuards(JwtAuthGuard)
     @HttpCode(HttpStatus.OK)
     @Delete('soft/:id')
     async softDelete(
-        @Param('id') id: number
+        @Param('id', ParseIntPipe) id: number
     ): Promise<Object> {
         await this.userService.softDeleteUser(id);
         return {

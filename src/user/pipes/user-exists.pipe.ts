@@ -13,6 +13,5 @@ export class UserExistsPipe implements PipeTransform {
         }
 
         return value;
-    }
-    
+    }  
 }

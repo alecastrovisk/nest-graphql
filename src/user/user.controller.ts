@@ -53,6 +53,6 @@ export class UserController {
         await this.userService.softDeleteUser(id);
         return {
             message: 'Usuário deletado!'
-        };
+        }
     }
 }

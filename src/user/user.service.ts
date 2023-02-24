@@ -76,7 +76,7 @@ export class UserService {
         }
     }
 
-    async updateUser(id: number, data: UpdateUserDTO): Promise<Object> {
+    async updateUser(id: number, data: UpdateUserDTO): Promise<User> {
         try {
             const user = await this.userRepository.findOneBy({ id: id });
 
@@ -86,9 +86,10 @@ export class UserService {
   
             await this.userRepository.update(id, data);
 
-            return {
-                message: 'Usuário atualizado com sucesso!'
-            }
+            const updatedUser = await this.userRepository.findOneBy({ id: id });
+
+            return updatedUser;
+
         } catch (error) {
             if(error instanceof NotFoundException) throw error;
             
@@ -112,11 +113,17 @@ export class UserService {
         try {
             const user = await this.userRepository.findOneBy({ id: id });
 
-            if (user) {
-                await this.userRepository.softDelete(user);
+            if (!user) {
+                throw new NotFoundException('Usuário não encontrado!');
             }
+
+            await this.userRepository.softRemove(user);
         } catch (error) {
-            throw new NotFoundException('Usuário não encontrado!');
+            if (error instanceof NotFoundException) throw error;
+
+            throw new InternalServerErrorException(
+                'Não foi possível deletar o usuário'
+            );
         }
     }
 }

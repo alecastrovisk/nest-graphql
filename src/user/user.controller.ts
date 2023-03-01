@@ -1,10 +1,8 @@
-import { Body, Controller, Delete, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Put, UseGuards, UsePipes } from '@nestjs/common';
+import { Body, Controller, Delete, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Put, UseGuards} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { LocalAuthGuard } from 'src/auth/guards/local-auth.guard';
 import { CreateUserDTO } from './dto/create-user.input';
 import { UpdateUserDTO } from './dto/update-user.input';
-import { UserExistsPipe } from './pipes/user-exists.pipe';
 import { User } from './user.entity';
 import { UserService } from './user.service';
 

@@ -3,7 +3,6 @@
 # ------------------------------------------------------
 
 input CreateUserDTO {
-  age: Float!
   email: String!
   name: String!
   password: String!
@@ -24,7 +23,6 @@ type Query {
 }
 
 type User {
-  age: Float!
   createdAt: DateTime!
   deletedAt: DateTime!
   email: String!

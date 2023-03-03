@@ -1,5 +1,16 @@
-import { ObjectType, Field, ID } from '@nestjs/graphql';
-import { Column, PrimaryGeneratedColumn, Entity, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
+import {
+    ObjectType, 
+    Field, 
+    ID
+} from '@nestjs/graphql';
+import { 
+    Column, 
+    PrimaryGeneratedColumn, 
+    Entity, 
+    CreateDateColumn, 
+    UpdateDateColumn, 
+    DeleteDateColumn 
+} from 'typeorm';
 
 @ObjectType()
 @Entity()
@@ -20,9 +31,9 @@ export class User {
     @Field()
     password: string;
 
-    @Column()
-    @Field()
-    age: number;
+    // @Column()
+    // @Field()
+    // age: number;
 
     @CreateDateColumn()
     @Field()
@@ -41,7 +52,7 @@ export class User {
         this.name = user?.name;
         this.email = user?.email;
         this.password = user?.password;
-        this.age = user?.age;
+        // this.age = user?.age;
         this.createdAt = user?.createdAt;
         this.updatedAt = user?.updatedAt;
         this.deletedAt = user?.deletedAt;

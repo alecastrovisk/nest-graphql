@@ -34,9 +34,9 @@ export class CreateUserDTO {
     @IsNotEmpty({ message: 'A senha não pode estar vazia!'})
     password: string;
 
-    @ApiProperty({
-        example: 18
-    })
-    @IsNumber()
-    age: number;
+    // @ApiProperty({ 
+    //     example: 18
+    // })
+    // @IsNumber()
+    // age: number;
 }

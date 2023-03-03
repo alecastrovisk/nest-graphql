@@ -12,7 +12,6 @@ const userEntityList: User[] = [
     "name": "Mel",
     "email": "mel@email.com",
     "password": "12345",
-    "age": 20
   })
 ]
 
@@ -20,14 +19,12 @@ const userWithUndefinedPassword: User = new User({
   "name": "Mel",
   "email": "mel@email.com",
   "password": undefined,
-  "age": 20
 });
 
 const userUpdated: UpdateUserDTO = new User({
   "name": "Mel",
   "email": "mel@email.com",
   "password": "12345",
-  "age": 20
 })
 
 describe('UserService', () => {
@@ -100,7 +97,6 @@ describe('UserService', () => {
         name: "Mel",
         email: "mel@email.com",
         password: "12345",
-        age: 19
       }
 
       const result = await userService.createUser(data);
@@ -115,7 +111,6 @@ describe('UserService', () => {
         name: "Mel",
         email: "mel@email.com",
         password: "12345",
-        age: 19
       }
 
       jest.spyOn(userRepository, 'save').mockRejectedValueOnce(new Error());
@@ -129,7 +124,6 @@ describe('UserService', () => {
       const data: UpdateUserDTO = {
         name: "Mel",
         email: "mel@email.com",
-        age: 22
       }
 
       jest.spyOn(userRepository, 'save')
@@ -144,7 +138,6 @@ describe('UserService', () => {
       const data: UpdateUserDTO = {
         name: "Mel",
         email: "mel@email.com",
-        age: 20
       }
 
       jest

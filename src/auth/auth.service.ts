@@ -5,6 +5,7 @@ import { UserPayload } from './models/UserPayload';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { UserToken } from './models/UserToken';
+import { ObjectType } from 'typeorm';
 
 @Injectable()
 export class AuthService {
@@ -13,7 +14,7 @@ export class AuthService {
         private readonly jwtService: JwtService
     ){}  
       
-    login(user: User): UserToken {
+    login(user: User): Object {
         const payload: UserPayload = {
             sub: user.id,
             email: user.email,
@@ -21,8 +22,9 @@ export class AuthService {
         };
 
         const jwtToken = this.jwtService.sign(payload);
-
+        
         return {
+            user,
             access_token: jwtToken,
         }
     }

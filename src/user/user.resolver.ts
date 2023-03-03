@@ -25,7 +25,7 @@ export class UserResolver {
     @UseGuards(GqlAuthGuard)
     async users(@CurrentUser() user: User): Promise<User[]> {
         const users = await this.userService.findAllUsers();
-        console.log(user)
+        // console.log(user);
         return users;
     }
 

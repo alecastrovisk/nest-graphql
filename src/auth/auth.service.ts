@@ -9,11 +9,11 @@ import { ObjectType } from 'typeorm';
 
 @Injectable()
 export class AuthService {
-    constructor( 
-        private readonly userService: UserService, 
+    constructor(
+        private readonly userService: UserService,
         private readonly jwtService: JwtService
-    ){}  
-      
+    ) { }
+
     login(user: User): Object {
         const payload: UserPayload = {
             sub: user.id,
@@ -22,20 +22,20 @@ export class AuthService {
         };
 
         const jwtToken = this.jwtService.sign(payload);
-        
+
         return {
-            user,
+            // user,
             access_token: jwtToken,
         }
     }
-    
+
     async validateUser(email: string, password: string): Promise<User> {
         const user = await this.userService.findUserByEmail(email);
-        
-        if(user) {
+
+        if (user) {
             const isPasswordValid = await bcrypt.compare(password, user.password);
 
-            if(isPasswordValid) {
+            if (isPasswordValid) {
                 return {
                     ...user,
                     password: undefined

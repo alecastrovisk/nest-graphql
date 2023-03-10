@@ -42,6 +42,8 @@ export class UserService {
                 password: undefined
             };
         } catch (error) {
+            if (error instanceof ConflictException) throw error;
+
             throw new InternalServerErrorException(
                 'Não foi possível salvar o usuário!'
             );

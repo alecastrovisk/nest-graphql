@@ -1,4 +1,5 @@
 import {
+    ConflictException,
     Injectable,
     InternalServerErrorException,
     NotFoundException
@@ -21,20 +22,26 @@ export class UserService {
 
     async createUser(data: CreateUserDTO): Promise<User> {
         try {
+            const emailExists = this.findUserByEmail(data.email);
+
+            if (emailExists) {
+                throw new ConflictException('Email já existe!');
+            }
+
             const userData = {
                 ...data,
                 password: await bcrypt.hash(data.password, 10),
             }
-    
+
             const user = this.userRepository.create(userData);
-    
+
             const userSaved = await this.userRepository.save(user);
-    
+
             return {
-                ...userSaved, 
+                ...userSaved,
                 password: undefined
             };
-        } catch(error) {
+        } catch (error) {
             throw new InternalServerErrorException(
                 'Não foi possível salvar o usuário!'
             );
@@ -44,7 +51,7 @@ export class UserService {
     async findAllUsers(): Promise<User[]> {
         try {
             const users = await this.userRepository.find();
-            return users;    
+            return users;
         } catch (error) {
             throw new NotFoundException(
                 'Não foi possível encontrar os usuários!'
@@ -67,7 +74,7 @@ export class UserService {
             const user = await this.userRepository.findOne({
                 where: { email: email }
             });
-    
+
             return user;
         } catch (error) {
             throw new NotFoundException(
@@ -83,7 +90,7 @@ export class UserService {
             if (!user) {
                 throw new NotFoundException('Usuário não encontrado!');
             }
-  
+
             await this.userRepository.update(id, data);
 
             const updatedUser = await this.userRepository.findOneBy({ id: id });
@@ -91,8 +98,8 @@ export class UserService {
             return updatedUser;
 
         } catch (error) {
-            if(error instanceof NotFoundException) throw error;
-            
+            if (error instanceof NotFoundException) throw error;
+
             throw new InternalServerErrorException(
                 'Não foi possível atualizar o usuário!'
             )

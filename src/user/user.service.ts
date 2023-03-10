@@ -22,8 +22,7 @@ export class UserService {
 
     async createUser(data: CreateUserDTO): Promise<User> {
         try {
-            const emailExists = this.findUserByEmail(data.email);
-
+            const emailExists = await this.findUserByEmail(data.email);
             if (emailExists) {
                 throw new ConflictException('Email já existe!');
             }

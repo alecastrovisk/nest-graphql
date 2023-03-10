@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Put, UseGuards} from '@nestjs/common';
+import { Body, Controller, Delete, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CreateUserDTO } from './dto/create-user.input';
@@ -11,7 +11,7 @@ import { UserService } from './user.service';
 export class UserController {
     constructor(
         private userService: UserService
-    ) {}
+    ) { }
 
     @Post()
     async create(@Body() data: CreateUserDTO): Promise<User> {

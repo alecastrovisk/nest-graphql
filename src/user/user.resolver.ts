@@ -11,7 +11,7 @@ import { UserService } from './user.service';
 export class UserResolver {
     constructor(
         private userService: UserService
-    ){}
+    ) { }
 
     @Mutation(() => User)
     async createUser(
@@ -20,7 +20,7 @@ export class UserResolver {
         const user = await this.userService.createUser(data);
         return user;
     }
-    
+
     @Query(() => [User])
     @UseGuards(GqlAuthGuard)
     async users(@CurrentUser() user: User): Promise<User[]> {

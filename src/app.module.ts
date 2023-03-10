@@ -3,14 +3,14 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 
-import { join } from 'path';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { join } from 'path';
 
-import { AppService } from './app.service';
 import { AppController } from './app.controller';
+import { AppService } from './app.service';
 
-import { dataSourceOptions } from './database/data-source';
 import { AuthModule } from './auth/auth.module';
+import { dataSourceOptions } from './database/data-source';
 
 @Module({
   imports: [
@@ -25,6 +25,6 @@ import { AuthModule } from './auth/auth.module';
   ],
   controllers: [AppController],
   providers: [AppService],
-  exports:[]
+  exports: []
 })
-export class AppModule {}
+export class AppModule { }

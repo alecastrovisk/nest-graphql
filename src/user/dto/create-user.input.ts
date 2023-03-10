@@ -2,9 +2,7 @@ import { InputType } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
 import {
     IsEmail,
-    IsNotEmpty,
-    IsNumber,
-    IsString,
+    IsNotEmpty, IsString,
     MaxLength,
     MinLength
 } from "class-validator";
@@ -15,14 +13,14 @@ export class CreateUserDTO {
         example: 'Alexandre Castro',
     })
     @IsString()
-    @IsNotEmpty({ message: 'O campo não pode ser vazio!'})
+    @IsNotEmpty({ message: 'O campo não pode ser vazio!' })
     name: string;
 
     @ApiProperty({
         example: 'alex@email.com'
     })
     @IsEmail()
-    @IsNotEmpty({ message: 'O campo não pode ser vazio!'})
+    @IsNotEmpty({ message: 'O campo não pode ser vazio!' })
     email: string;
 
     @ApiProperty({
@@ -31,7 +29,7 @@ export class CreateUserDTO {
     @IsString()
     @MinLength(4)
     @MaxLength(8)
-    @IsNotEmpty({ message: 'A senha não pode estar vazia!'})
+    @IsNotEmpty({ message: 'A senha não pode estar vazia!' })
     password: string;
 
     // @ApiProperty({ 

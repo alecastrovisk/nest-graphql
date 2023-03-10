@@ -163,8 +163,8 @@ describe('UserService', () => {
 
     it('Should throw a not found exception', () => {
       jest
-      .spyOn(userRepository, 'findOneBy')
-      .mockRejectedValueOnce(new Error());
+        .spyOn(userRepository, 'findOneBy')
+        .mockRejectedValueOnce(new Error());
 
       expect(userService.softDeleteUser(1)).rejects.toThrowError(NotFoundException);
     });

@@ -7,7 +7,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
   app.enableCors();
   app.useGlobalPipes(new ValidationPipe())
-  
+
 
   const config = new DocumentBuilder()
     .setTitle('Users api')
@@ -16,9 +16,9 @@ async function bootstrap() {
     .addTag('users')
     .build();
 
-    const document = SwaggerModule.createDocument(app, config);
+  const document = SwaggerModule.createDocument(app, config);
 
-    SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('api', app, document);
 
   await app.listen(3000);
 }
